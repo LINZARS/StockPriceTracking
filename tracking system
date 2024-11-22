@@ -1,0 +1,120 @@
+import java.sql.*;
+
+public class UniversityDatabase {
+
+    private Connection connection;
+
+    public UniversityDatabase(String dbUrl, String dbUser, String dbPassword) throws SQLException {
+        connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    }
+
+    
+    public void addStudent(int id, String name, String department) {
+        String query = "INSERT INTO Students (id, name, department) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.setString(2, name);
+            stmt.setString(3, department);
+            stmt.executeUpdate();
+            System.out.println("Student added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+   
+    public void displayStudents() {
+        String query = "SELECT * FROM Students";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String department = rs.getString("department");
+                System.out.println("ID: " + id + ", Name: " + name + ", Department: " + department);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    public void addCourse(int courseId, String courseName, String department) {
+        String query = "INSERT INTO Courses (course_id, course_name, department) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, courseId);
+            stmt.setString(2, courseName);
+            stmt.setString(3, department);
+            stmt.executeUpdate();
+            System.out.println("Course added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+   
+    public void displayCourses() {
+        String query = "SELECT * FROM Courses";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int courseId = rs.getInt("course_id");
+                String courseName = rs.getString("course_name");
+                String department = rs.getString("department");
+                System.out.println("Course ID: " + courseId + ", Course Name: " + courseName + ", Department: " + department);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    public void addFaculty(int facultyId, String name, String department) {
+        String query = "INSERT INTO Faculties (faculty_id, name, department) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, facultyId);
+            stmt.setString(2, name);
+            stmt.setString(3, department);
+            stmt.executeUpdate();
+            System.out.println("Faculty added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    public void displayFaculties() {
+        String query = "SELECT * FROM Faculties";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int facultyId = rs.getInt("faculty_id");
+                String name = rs.getString("name");
+                String department = rs.getString("department");
+                System.out.println("Faculty ID: " + facultyId + ", Name: " + name + ", Department: " + department);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            
+            UniversityDatabase db = new UniversityDatabase("jdbc:mysql://localhost:3306/university", "root", "password");
+
+           
+            db.addStudent(101, "John Doe", "Computer Science");
+            db.addCourse(201, "Data Structures", "Computer Science");
+            db.addFaculty(301, "Dr. Smith", "Computer Science");
+
+           
+            System.out.println("\nAll Students:");
+            db.displayStudents();
+            System.out.println("\nAll Courses:");
+            db.displayCourses();
+            System.out.println("\nAll Faculties:");
+            db.displayFaculties();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
